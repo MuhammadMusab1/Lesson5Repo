@@ -46,6 +46,12 @@ namespace WebApplication1.Data
                 .WithMany(u => u.EditorJournals)
                 .HasForeignKey(ej => ej.EditorId)
                 .OnDelete(DeleteBehavior.NoAction); //to resolve a foreign key constraint
+            builder.Entity<User>().HasData(new User
+            {
+                Id = 1,
+                Name = "Musab"
+            });
+
 
         }
         public DbSet<User> User { get; set; }
