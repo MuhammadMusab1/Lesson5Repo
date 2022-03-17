@@ -15,6 +15,24 @@ namespace WebApplication1.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Journal>().HasKey(j => j.JournalNumber);
+
+            builder.Entity<User>().HasMany(u => u.OwnedJournals)
+                .WithOne(j => j.Owner)
+                .HasForeignKey(j => j.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<User>().HasMany(u => u.EditingJournals)
+                .WithOne(ej => ej.User)
+                .HasForeignKey(ej => ej.UserId);
+
+            builder.Entity<Journal>().HasMany(j => j.JournalEditors)
+                .WithOne(je => je.Journal)
+                .HasForeignKey(je => je.JournalNumber);
+        }
+
         public DbSet<User> User { get; set; }
     }
 }
