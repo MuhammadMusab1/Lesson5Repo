@@ -17,49 +17,51 @@ namespace WebApplication1.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<User>().HasKey(c => c.Id);
-            builder.Entity<Journal>().HasKey(j => j.JournalNumber);
-            builder.Entity<UserJournal>().HasKey(uj => uj.EditingId);
+            builder.Entity<User>().HasKey(user => user.Id);
+            builder.Entity<Journal>().HasKey(journal => journal.Id);
 
+            //One User has many Journals, one journal can only have one User (OneToMany)
 
-            builder.Entity<User>().HasMany(u => u.OwnedJournals)
-                .WithOne(u => u.Owner)
-                .HasForeignKey(u => u.JournalNumber);
+            //builder.Entity<User>()
+            //    .HasMany(user => user.Journals)
+            //    .WithOne(journal => journal.Owner)
+            //    .HasForeignKey(journal => journal.OwnerId);
 
-            builder.Entity<Journal>().HasOne(j => j.Owner)
-                .WithMany(j => j.OwnedJournals)
-                .HasForeignKey(j => j.OwnerId);
+            //Another way of doing the same OneToMany
+            builder.Entity<Journal>()
+                .HasOne(journal => journal.Owner)
+                .WithMany(user => user.Journals)
+                .HasForeignKey(journal => journal.OwnerId);
 
+            //One editor can edit many journals and one Journal can have many editors (ManyToMany)
 
-            builder.Entity<UserJournal>().HasOne<User>(uj => uj.User)
-                .WithMany(uj => uj.EditingJournals)
-                .HasForeignKey(uj => uj.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<EditorJournal>().HasKey(editorJournal => editorJournal.Id);
 
-            builder.Entity<UserJournal>().HasOne<Journal>(uj => uj.Journal)
-                .WithMany(uj => uj.JournalEditors)
-                .HasForeignKey(uj => uj.JournalNumber)
-                .OnDelete(DeleteBehavior.NoAction);
-
-
-            builder.Entity<User>().HasMany<UserJournal>(u => u.EditingJournals)
-                .WithOne(j => j.User)
-                .HasForeignKey(u => u.UserId);
-
-            builder.Entity<Journal>().HasMany<UserJournal>(j => j.JournalEditors)
-                .WithOne(j => j.Journal)
-                .HasForeignKey(j => j.JournalNumber);
-
-            builder.Entity<User>().HasData(new User 
+            builder.Entity<EditorJournal>()
+                .HasOne(ej => ej.Journal)
+                .WithMany(j => j.EditorJournals)
+                .HasForeignKey(ej => ej.JournalId);
+            builder.Entity<EditorJournal>()
+                .HasOne(ej => ej.Editor)
+                .WithMany(u => u.EditorJournals)
+                .HasForeignKey(ej => ej.EditorId)
+                .OnDelete(DeleteBehavior.NoAction); //to resolve a foreign key constraint
+            builder.Entity<User>().HasData(new User
             {
                 Id = 1,
-                FirstName = "Zach",
-                LastName = "Montreuil"
+                Name = "Musab"
             });
-        }
 
+
+        }
         public DbSet<User> User { get; set; }
         public DbSet<Journal> Journal { get; set; }
-        public DbSet<UserJournal> UserJournal { get; set; }
+        public DbSet<EditorJournal> EditorJournal { get; set; }
     }
 }
+
+/*
+Create a system that allows for Journals with Editing and Owning Users,
+and configure your tables using ModelBuilder.
+(A Journal can have many Editors and one Owner, which are both of the User class).
+ */

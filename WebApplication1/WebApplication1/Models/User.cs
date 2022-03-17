@@ -3,17 +3,13 @@
     public class User
     {
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Journal? OwnedJournal { get; set; }
-        public int? OwnedJournalId { get; set; }
-        public ICollection<Journal> OwnedJournals { get; set; }
-        public ICollection<UserJournal>? EditingJournals { get; set; }
-
+        public string Name { get; set; }
+        public ICollection<Journal> Journals { get; set; }
+        public ICollection<EditorJournal> EditorJournals { get; set; }
         public User()
         {
-            OwnedJournals = new HashSet<Journal>();
-            EditingJournals = new HashSet<UserJournal>();
+            Journals = new HashSet<Journal>();
+            EditorJournals = new HashSet<EditorJournal>();
         }
     }
 }
