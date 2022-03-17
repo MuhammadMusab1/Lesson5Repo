@@ -2,17 +2,15 @@
 {
     public class Journal
     {
-        public int JournalNumber { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
+        public int Id { get; set; }
+        public string Entry { get; set; }
+        public DateTime CreatedDate { get; set; }
         public User Owner { get; set; }
         public int OwnerId { get; set; }
-
-        public ICollection<UserJournal>? JournalEditors { get; set; }
-
+        public ICollection<EditorJournal> EditorJournals { get; set; }
         public Journal()
         {
-            JournalEditors = new HashSet<UserJournal>();
+            EditorJournals = new HashSet<EditorJournal>();
         }
     }
 }
